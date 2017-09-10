@@ -1,0 +1,9 @@
+{
+  "name": "serverless-expense-tracker",
+  "version": "0.1.0",
+  "description": "Serverless backend for expense tracker clients",
+  "repository": "https://github.com/jasongonzales23/serverless-expense-tracker",
+  "author": "Jason Gonzales <jason.gonzales23@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
