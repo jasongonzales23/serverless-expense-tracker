@@ -5,5 +5,8 @@
   "repository": "https://github.com/jasongonzales23/serverless-expense-tracker",
   "author": "Jason Gonzales <jason.gonzales23@gmail.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "ulid": "^1.0.0"
+  }
 }
