@@ -8,9 +8,17 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 module.exports.create = (event, context, callback) => {
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body);
-  if (typeof data.text !== 'string') {
+  const {
+    amount,
+    description
+  } = data
+
+  const validAmount =  typeof amount === 'number';
+  const validDesc = typeof description === 'string';
+
+  if (!validAmount || !validDesc) {
     console.error('Validation Failed');
-    callback(new Error('Couldn\'t create the todo item.'));
+    callback(new Error('Couldn\'t create the entry.'));
     return;
   }
 
@@ -18,10 +26,9 @@ module.exports.create = (event, context, callback) => {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
       id: ulid(),
-      text: data.text,
-      checked: false,
+      amount: amount,
+      description: description,
       createdAt: timestamp,
-      updatedAt: timestamp,
     },
   };
 
