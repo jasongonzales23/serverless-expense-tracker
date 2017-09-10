@@ -34,6 +34,30 @@ functions:
           method: get
           cors: true
 
+  get:
+    handler: expenseTracker/get.get
+    events:
+      - http:
+          path: expenses/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: expenseTracker/update.update
+    events:
+      - http:
+          path: expenses/{id}
+          method: put
+          cors: true
+
+  delete:
+    handler: expenseTracker/delete.delete
+    events:
+      - http:
+          path: expenses/{id}
+          method: delete
+          cors: true
+
 resources:
   Resources:
     ExpenseTrackerDynamoDbTable:

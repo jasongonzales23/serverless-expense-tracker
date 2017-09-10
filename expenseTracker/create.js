@@ -18,7 +18,7 @@ module.exports.create = (event, context, callback) => {
 
   if (!validAmount || !validDesc) {
     console.error('Validation Failed');
-    callback(new Error('Couldn\'t create the entry.'));
+    callback(new Error('Couldn\'t create the expense entry.'));
     return;
   }
 
