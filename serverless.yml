@@ -19,7 +19,7 @@ provider:
 
 functions:
   create:
-    handler: expenses/create.create
+    handler: expenseTracker/create.create
     events:
       - http:
           path: expenses
@@ -27,7 +27,7 @@ functions:
           cors: true
 
   list:
-    handler: expenses/list.list
+    handler: expenseTracker/list.list
     events:
       - http:
           path: expenses
