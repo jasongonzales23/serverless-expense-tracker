@@ -5,15 +5,16 @@ provider:
   name: aws
   runtime: nodejs6.10
   environment:
-    EXPENSES_TABLE: "${self:service}-${opt:stage, self:provider.stage}-expenses"
-    BUDGETS_TABLE: "${self:service}-${opt:stage, self:provider.stage}-budgets"
+    EXPENSES_TABLE: { "Ref": "DynamoDbExpenses" }
+    BUDGETS_TABLE: { "Ref": "DynamoDbBudgets" }
 
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:DescribeTable
         - dynamodb:Query
-        - dynamodb:Scan - dynamodb:GetItem
+        - dynamodb:Scan
+        - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
@@ -21,9 +22,9 @@ provider:
         - dynamodb:GetRecords
         - dynamodb:GetShardIterator
         - dynamodb:ListStreams
-      Resource: "*"
-      #Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.EXPENSES_TABLE}"
-
+      Resource:
+        - { "Fn::GetAtt": ["DynamoDbExpenses", "Arn"] }
+        - { "Fn::GetAtt": ["DynamoDbBudgets", "Arn"] }
 functions:
   create:
     handler: expenseTracker/create.create
@@ -98,7 +99,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.EXPENSES_TABLE}
 
     DynamoDbBudgets:
       Type: 'AWS::DynamoDB::Table'
@@ -115,4 +115,3 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.BUDGETS_TABLE}
