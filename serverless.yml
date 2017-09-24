@@ -5,14 +5,15 @@ provider:
   name: aws
   runtime: nodejs6.10
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    EXPENSES_TABLE: "${self:service}-${opt:stage, self:provider.stage}-expenses"
+    BUDGETS_TABLE: "${self:service}-${opt:stage, self:provider.stage}-budgets"
+
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:DescribeTable
         - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
+        - dynamodb:Scan - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
@@ -20,7 +21,8 @@ provider:
         - dynamodb:GetRecords
         - dynamodb:GetShardIterator
         - dynamodb:ListStreams
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Resource: "*"
+      #Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.EXPENSES_TABLE}"
 
 functions:
   create:
@@ -31,11 +33,27 @@ functions:
           method: post
           cors: true
 
+  createBudget:
+    handler: expenseTracker/createBudget.createBudget
+    events:
+      - http:
+          path: budgets
+          method: post
+          cors: true
+
   list:
     handler: expenseTracker/list.list
     events:
       - http:
           path: expenses
+          method: get
+          cors: true
+
+  listBudgets:
+    handler: expenseTracker/listBudgets.listBudgets
+    events:
+      - http:
+          path: budgets
           method: get
           cors: true
 
@@ -80,7 +98,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: ${self:provider.environment.EXPENSES_TABLE}
 
     DynamoDbBudgets:
       Type: 'AWS::DynamoDB::Table'
@@ -97,4 +115,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: ${self:provider.environment.BUDGETS_TABLE}
